@@ -1,0 +1,6 @@
+@ST.Funds.API_HostAddress = http://localhost:5009
+
+GET {{ST.Funds.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
