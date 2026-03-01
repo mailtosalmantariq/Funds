@@ -4,26 +4,18 @@
 *.dll
 *.exe
 *.pdb
-*.cache
 
 # IDE-specific files
 .vs/
 *.suo
 *.user
-*.json
 
 # Database and cache files
-*.db
 *.db-shm
 *.db-wal
 
 # IDE and tooling
 .idea/
-*.log
-*.cache
-*.DS_Store
 
-# Test results
-TestResults/
 
 
