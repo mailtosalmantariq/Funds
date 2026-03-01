@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="ST.Funds.API.Tests/ST.Funds.API.Tests.csproj" Id="be5c61aa-f609-4aed-8015-d7db877bf3e0" />
+  <Project Path="ST.Funds.API/ST.Funds.API.csproj" />
+  <Project Path="ST.Funds.Data/ST.Funds.Data.csproj" />
+  <Project Path="ST.Funds.Middleware/ST.Funds.Middleware.csproj" />
+  <Project Path="ST.Funds.Services.Tests/ST.Funds.Services.Tests.csproj" Id="69211b0d-7d3a-452b-a9f7-c418cd1a8f91" />
+  <Project Path="ST.Funds.Services/ST.Funds.Application.csproj" />
+</Solution>

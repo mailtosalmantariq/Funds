@@ -10,7 +10,6 @@
 .vs/
 *.suo
 *.user
-*.slnx
 *.json
 
 # Database and cache files
@@ -27,7 +26,4 @@
 # Test results
 TestResults/
 
-
-# Optional: ignore test results
-TestResults/
 
