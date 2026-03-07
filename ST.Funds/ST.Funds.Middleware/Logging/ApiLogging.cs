@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace ST.Funds.Middleware
+namespace ST.Funds.Middleware.Logging
 {
     public class ApiLogging
     {

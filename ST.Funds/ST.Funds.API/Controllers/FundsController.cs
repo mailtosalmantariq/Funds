@@ -28,21 +28,8 @@ namespace ST.Funds.Api.Controllers
             [FromQuery] FundQueryParameters query,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                var funds = await _service.GetFundsAsync(query);
-                return Ok(funds);
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("GetFunds request was cancelled.");
-                return StatusCode(499); // Client Closed Request (optional)
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving funds.");
-                return StatusCode(500, "An unexpected error occurred.");
-            }
+            var funds = await _service.GetFundsAsync(query);
+            return Ok(funds);
         }
 
         // ==========================================
@@ -53,37 +40,18 @@ namespace ST.Funds.Api.Controllers
             string marketCode,
             CancellationToken cancellationToken)
         {
-            try
+            var fund = await _service.GetByMarketCodeAsync(marketCode);
+
+            if (fund is null)
             {
-                var fund = await _service.GetByMarketCodeAsync(marketCode);
-
-                if (fund is null)
-                {
-                    _logger.LogInformation(
-                        "Fund not found for MarketCode {MarketCode}",
-                        marketCode);
-
-                    return NotFound();
-                }
-
-                return Ok(fund);
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning(
-                    "GetByMarketCode request cancelled for {MarketCode}",
+                _logger.LogInformation(
+                    "Fund not found for MarketCode {MarketCode}",
                     marketCode);
 
-                return StatusCode(499);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,
-                    "Error retrieving fund {MarketCode}",
-                    marketCode);
 
-                return StatusCode(500, "An unexpected error occurred.");
-            }
+            return Ok(fund);
         }
 
         // ==========================================
@@ -93,21 +61,9 @@ namespace ST.Funds.Api.Controllers
         public async Task<IActionResult> Refresh(
             CancellationToken cancellationToken)
         {
-            try
-            {
-                await _service.RefreshFundsAsync(cancellationToken);
-                return NoContent();
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogWarning("Fund refresh was cancelled.");
-                return StatusCode(499);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error during fund refresh.");
-                return StatusCode(500, "An unexpected error occurred.");
-            }
+            await _service.RefreshFundsAsync(cancellationToken);
+
+            return NoContent();
         }
     }
 }

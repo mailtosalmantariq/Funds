@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NUnit.Framework;
 using ST.Funds.Api.Controllers;
 using ST.Funds.Application.DTO;
 using ST.Funds.Application.Services.FundIngestion;
@@ -52,48 +53,6 @@ namespace ST.Funds.Api.Tests
         }
 
         // ===============================
-        // GET FUNDS - CANCELLATION
-        // ===============================
-        [Test]
-        public async Task GetFunds_Returns_499_When_Cancelled()
-        {
-            _serviceMock
-                .Setup(s => s.GetFundsAsync(It.IsAny<FundQueryParameters>()))
-                .ThrowsAsync(new OperationCanceledException());
-
-            var result = await _controller.GetFunds(
-                new FundQueryParameters(),
-                CancellationToken.None);
-
-            Assert.That(result.Result, Is.InstanceOf<StatusCodeResult>());
-
-            var statusResult = result.Result as StatusCodeResult;
-
-            Assert.That(statusResult!.StatusCode, Is.EqualTo(499));
-        }
-
-        // ===============================
-        // GET FUNDS - EXCEPTION
-        // ===============================
-        [Test]
-        public async Task GetFunds_Returns_500_On_Exception()
-        {
-            _serviceMock
-                .Setup(s => s.GetFundsAsync(It.IsAny<FundQueryParameters>()))
-                .ThrowsAsync(new Exception());
-
-            var result = await _controller.GetFunds(
-                new FundQueryParameters(),
-                CancellationToken.None);
-
-            Assert.That(result.Result, Is.InstanceOf<ObjectResult>());
-
-            var objectResult = result.Result as ObjectResult;
-
-            Assert.That(objectResult!.StatusCode, Is.EqualTo(500));
-        }
-
-        // ===============================
         // GET BY MARKET CODE - SUCCESS
         // ===============================
         [Test]
@@ -110,6 +69,10 @@ namespace ST.Funds.Api.Tests
                 CancellationToken.None);
 
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+
+            var okResult = result.Result as OkObjectResult;
+
+            Assert.That(okResult!.Value, Is.EqualTo(fund));
         }
 
         // ===============================
@@ -130,28 +93,6 @@ namespace ST.Funds.Api.Tests
         }
 
         // ===============================
-        // GET BY MARKET CODE - CANCELLATION
-        // ===============================
-        [Test]
-        public async Task GetByMarketCode_Returns_499_When_Cancelled()
-        {
-            _serviceMock
-                .Setup(s => s.GetByMarketCodeAsync("ABC"))
-                .ThrowsAsync(new OperationCanceledException());
-
-            var result = await _controller.GetByMarketCode(
-                "ABC",
-                CancellationToken.None);
-
-            Assert.That(result.Result, Is.InstanceOf<StatusCodeResult>());
-
-            var statusResult = result.Result as StatusCodeResult;
-
-            Assert.That(statusResult!.StatusCode, Is.EqualTo(499));
-        }
-
-
-        // ===============================
         // REFRESH - SUCCESS
         // ===============================
         [Test]
@@ -167,22 +108,20 @@ namespace ST.Funds.Api.Tests
         }
 
         // ===============================
-        // REFRESH - EXCEPTION
+        // REFRESH - SERVICE CALLED
         // ===============================
         [Test]
-        public async Task Refresh_Returns_500_On_Exception()
+        public async Task Refresh_Calls_Service()
         {
             _serviceMock
                 .Setup(s => s.RefreshFundsAsync(It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception());
+                .Returns(Task.CompletedTask);
 
-            var result = await _controller.Refresh(CancellationToken.None);
+            await _controller.Refresh(CancellationToken.None);
 
-            Assert.That(result, Is.InstanceOf<ObjectResult>());
-
-            var objectResult = result as ObjectResult;
-
-            Assert.That(objectResult!.StatusCode, Is.EqualTo(500));
+            _serviceMock.Verify(
+                s => s.RefreshFundsAsync(It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

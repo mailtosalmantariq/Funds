@@ -33,16 +33,8 @@ namespace ST.Funds.Application.Services.FundIngestion
         // =====================================================
         public async Task<IEnumerable<FundDto>> GetFundsAsync(FundQueryParameters query)
         {
-            try
-            {
-                var dbQuery = BuildFundQuery(query);
-                return await ProjectToDto(dbQuery).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retrieving funds.");
-                throw;
-            }
+            var dbQuery = BuildFundQuery(query);
+            return await ProjectToDto(dbQuery).ToListAsync();
         }
 
         // =====================================================
@@ -50,20 +42,10 @@ namespace ST.Funds.Application.Services.FundIngestion
         // =====================================================
         public async Task<FundDto?> GetByMarketCodeAsync(string marketCode)
         {
-            try
-            {
-                var query = BaseFundQuery()
-                    .Where(f => f.MarketCode == marketCode);
+            var query = BaseFundQuery()
+                .Where(f => f.MarketCode == marketCode);
 
-                return await ProjectToDto(query).FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,
-                    "Error retrieving fund for MarketCode {MarketCode}",
-                    marketCode);
-                throw;
-            }
+            return await ProjectToDto(query).FirstOrDefaultAsync();
         }
 
         // =====================================================
@@ -73,23 +55,15 @@ namespace ST.Funds.Application.Services.FundIngestion
         {
             _logger.LogInformation("Starting fund ingestion.");
 
-            try
+            foreach (var source in _sources)
             {
-                foreach (var source in _sources)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    await ProcessSourceAsync(source, cancellationToken);
-                }
-
-                await _db.SaveChangesAsync(cancellationToken);
-
-                _logger.LogInformation("Fund ingestion completed.");
+                cancellationToken.ThrowIfCancellationRequested();
+                await ProcessSourceAsync(source, cancellationToken);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unexpected error during fund ingestion.");
-                throw;
-            }
+
+            await _db.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Fund ingestion completed.");
         }
 
         // =====================================================

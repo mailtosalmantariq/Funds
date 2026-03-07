@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ST.Funds.Application.Config;
 using ST.Funds.Application.Services.FundIngestion;
 using ST.Funds.Data.DataContext;
-using ST.Funds.Middleware;
+using ST.Funds.Middleware.Logging;
+using ST.Funds.Middleware.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ app.UseAuthorization();
 
 // Custom middleware
 app.UseMiddleware<ApiLogging>();
+app.UseGlobalExceptionHandler();
 
 app.MapControllers();
 

@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json;
 using ST.Funds.Application.Services.FundIngestion;
 using ST.Funds.Application.Config;
+using ST.Funds.Application.DTO;
 
 namespace ST.Funds.Services.Tests
 {
@@ -19,9 +20,6 @@ namespace ST.Funds.Services.Tests
         private Mock<ILogger<FundIngestionService>> _loggerMock;
         private IOptions<List<FundSourceConfig>> _options;
 
-        // ============================
-        // SETUP
-        // ============================
         [SetUp]
         public void Setup()
         {
@@ -52,7 +50,7 @@ namespace ST.Funds.Services.Tests
         }
 
         // ============================
-        // FAKE HTTP HANDLER
+        // Fake HTTP Handler
         // ============================
         private class FakeHttpMessageHandler : HttpMessageHandler
         {
@@ -156,6 +154,14 @@ namespace ST.Funds.Services.Tests
                         ongoingCharge = 0.3m,
                         sectorName = "Sector",
                         currency = "GBP"
+                    },
+                    profile = new { objective = "Test objective" },
+                    ratings = new { analystRating = 4, analystRatingLabel = "Gold" },
+                    documents = new object[] { },
+                    portfolio = new
+                    {
+                        asset = new object[] { },
+                        top10Holdings = new object[] { }
                     }
                 }
             };
